@@ -6,13 +6,13 @@
 # ==========================================
 
 #EXTINF:-1 tvg-id="民視第一台[4GTV]" tvg-name="民視第一台" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/FTV2.png" group-title="Taiwan",FTV Channel 1
-https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv003/4gtv-live-mid/index.m3u8?token=bFsKvmyhCiTvhc17EZ8MaQ&expires=1790814900&token1=Brd2dMXyF_dGaGfVqqhJ1Q&expires1=1790814900
+https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv003/4gtv-live-mid/index.m3u8?token=kdPUqfkE48dNeEfQwOEmtw&expires=1790815848&token1=nMVIamJZCkwIFjk0VToVjw&expires1=1790815848
 
 #EXTINF:-1 tvg-id="民視台灣台[4GTV]" tvg-name="民視台灣台" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/FTV3.png" group-title="Taiwan",FTV Taiwan
-https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv001/4gtv-live-mid/index.m3u8?token=o2ceeDQDUzXRJL3XEbtFPQ&expires=1790814462&token1=_x1r3QIsuASlmaU1xDz_JQ&expires1=1790814462
+https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv001/4gtv-live-mid/index.m3u8?token=6Z5CxXMM-mAWZPaBaMeGIA&expires=1790815930&token1=7XSPJCEvsqVCFrw8YN_vaQ&expires1=1790815930
 
 #EXTINF:-1 tvg-id="民視[4GTV]" tvg-name="民視" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/FTV.png" group-title="Taiwan",FTV TV
-https://4gtvfreepc-mozai.4gtv.tv/F0FEZXhZWjSw8FS-tk11bOus_k4CqwPuj2wuQeKPue0%3d/index.m3u8?token=yenstRSWlpOr4W3aUiljRg&expires=1790782848&token1=FYNoM9Frqs9Rresqnl5YBw&expires1=1790782848&refer=MTg1ZTdmMTUtOThmMS00YTQ5LWExMTktNDFhMTIzZmE3MTc0&y=0
+https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv002/4gtv-live-mid/index.m3u8?token=5lp4-NpPGcokMFn6DPjEFg&expires=1790815959&token1=yzHLUiPjN7qoqiPj2ITG6w&expires1=1790815959
 
 #EXTINF:-1 tvg-id="民視新聞台[4GTV]" tvg-name="民視新聞台" tvg-logo="https://raw.githubusercontent.com/wanglindl/TVlogo/main/img/FTV1.png" group-title="Taiwan",FTV News
 https://4gtvfreepc-cds.cdn.hinet.net/live/pool/litv-ftv13/4gtv-live-mid/index.m3u8?token=cLwaZy9dZUaxbzjON4NUfw&expires=1790751930&token1=g4T8wzLGBPkEDcXharIChA&expires1=1790751930
