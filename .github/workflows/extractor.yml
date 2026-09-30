@@ -1,0 +1,30 @@
+name: Auto Extract 4GTV Tokens
+
+on:
+  schedule:
+    - cron: '0 */2 * * *'  # Berjalan otomatis setiap 2 jam sekali di cloud GitHub
+  workflow_dispatch:       # Memungkinkan Anda menjalankan secara manual dari tab Actions di GitHub
+
+jobs:
+  run-extractor:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write      # Memberikan izin agar GitHub Actions bisa melakukan commit & push ke repo
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install playwright gitpython
+          playwright install chromium
+          playwright install-deps chromium
+
+      - name: Run extractor script
+        run: python auto_extractor.py
