@@ -1,60 +1,58 @@
 import datetime
+import urllib.request
+import urllib.error
 
-def generate_m3u():
-    # Menambahkan stempel waktu otomatis saat script dijalankan
+def fetch_and_update_playlist():
+    # URL sumber data/playlist dinamis yang menyediakan token terbaru
+    # (Anda bisa mengganti URL ini dengan endpoint API atau repo sumber token aktif)
+    source_url = "https://raw.githubusercontent.com/anekasari99-afk/4GTV/main/taiwan_4gtv.m3u"
+    
     current_time = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
     
-    m3u_content = f"""#EXTM3U x-tvg-url="https://epg.pw/xmltv/epg_TW.xml.gz"
-# Last Auto-Update: {current_time}
+    print(f"[{current_time}] Memulai pembaruan playlist 4GTV...")
 
-# ==========================================
-# TAIWAN CHANNELS (4gTV) - AUTO SYNCED
-# ==========================================
+    try:
+        # Mengatur User-Agent agar request tidak ditolak oleh server sumber
+        req = urllib.request.Request(
+            source_url, 
+            headers={
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            }
+        )
+        
+        with urllib.request.urlopen(req, timeout=15) as response:
+            content = response.read().decode('utf-8')
+            
+        # Validasi sederhana apakah konten yang diambil benar-benar format M3U
+        if "#EXTM3U" in content:
+            # Tambahkan atau perbarui baris keterangan waktu di bagian atas file
+            header_comment = f"# Last Auto-Update: {current_time}\n"
+            
+            # Jika header sudah ada, kita replace, jika belum kita sisipkan di bawah #EXTM3U
+            if "# Last Auto-Update:" in content:
+                lines = content.splitlines()
+                new_lines = []
+                for line in lines:
+                    if line.startswith("# Last Auto-Update:"):
+                        new_lines.append(header_comment.strip())
+                    else:
+                        new_lines.append(line)
+                final_content = "\n".join(new_lines)
+            else:
+                final_content = content.replace("#EXTM3U", f"#EXTM3U\n{header_comment.strip()}")
 
-#EXTINF:-1 tvg-id="民視第一台[4GTV]" tvg-name="民視第一台" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/FTV2.png" group-title="Taiwan",FTV Channel 1
-https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv003/4gtv-live-mid/4gtv-4gtv003-avc1_2000000=10001-mp4a_131000_zho=20000.m3u8?token=b_OJYWR4WovNxkTjdaG1lw&expires=1790771159&token1=bYmjCuh1_0cdiJD08CqFrA&expires1=1790771159
-
-#EXTINF:-1 tvg-id="民視台灣台[4GTV]" tvg-name="民視台灣台" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/FTV3.png" group-title="Taiwan",FTV Taiwan
-https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv001/4gtv-live-mid/index.m3u8?token=mDVyHmsjXCqKatSsZvrnyw&expires=1790751693&token1=WY7Ntaznra-0k5Yq8HtJDA&expires1=1790751693
-
-#EXTINF:-1 tvg-id="民視[4GTV]" tvg-name="民視" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/FTV.png" group-title="Taiwan",FTV TV
-https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv002/4gtv-live-mid/index.m3u8?token=yk7oGnNt34dJawTwsYLXKg&expires=1790751759&token1=HxAxFSKxW8D1sXJDT3bNnQ&expires1=1790751759
-
-#EXTINF:-1 tvg-id="民視新聞台[4GTV]" tvg-name="民視新聞台" tvg-logo="https://raw.githubusercontent.com/wanglindl/TVlogo/main/img/FTV1.png" group-title="Taiwan",FTV News
-https://4gtvfreepc-cds.cdn.hinet.net/live/pool/litv-ftv13/4gtv-live-mid/index.m3u8?token=cLwaZy9dZUaxbzjON4NUfw&expires=1790751930&token1=g4T8wzLGBPkEDcXharIChA&expires1=1790751930
-
-#EXTINF:-1 tvg-id="民視綜藝台[4GTV]" tvg-name="民視綜藝台" tvg-logo="https://raw.githubusercontent.com/wanglindl/TVlogo/main/img/FTV6.png" group-title="Taiwan",FTV Variety
-https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv004/4gtv-live-mid/index.m3u8?token=rUGvwsfy71AZhnbNR7FoNg&expires=1790751978&token1=-sUm1GTiqRxmrUIktKtogw&expires1=1790751978
-
-#EXTINF:-1 tvg-id="豬哥亮歌廳秀[4GTV]" tvg-name="豬哥亮歌廳秀" tvg-logo="https://raw.githubusercontent.com/wanglindl/TVlogo/main/img/FTV7.png" group-title="Taiwan",Chu Ko Liang
-https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv006/4gtv-live-mid/index.m3u8?token=DSPfCV5gkyL0n9U_SIguqA&expires=1790752131&token1=aSS4qCfPWQzctR49fcolwA&expires1=1790752131
-
-#EXTINF:-1 tvg-id="民視旅遊台[4GTV]" tvg-name="民視旅遊台" tvg-logo="https://raw.githubusercontent.com/wanglindl/TVlogo/main/img/FTV5.png" group-title="Taiwan",FTV Travel
-https://4gtvfreepc-cds.cdn.hinet.net/live/pool/litv-ftv07/4gtv-live-mid/index.m3u8?token=Ox6_U83tDNj9KgHFJ5Rh8g&expires=1790752242&token1=iFNvXRZRlVvvMdLbpJbKgQ&expires1=1790752242
-
-#EXTINF:-1 tvg-id="公視戲劇[4GTV]" tvg-name="公視戲劇" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/PTS3.png" group-title="Taiwan",PTS Drama
-https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv042/4gtv-live-mid/index.m3u8?token=CN0K0EfPLAVZrGu6E9A1OQ&expires=1790752301&token1=H3TeLw6_Hk4S45biOfy6Pg&expires1=1790752301
-
-#EXTINF:-1 tvg-id="民視影劇台[4GTV]" tvg-name="民視影劇台" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/FTV4.png" group-title="Taiwan",FTV Drama
-https://4gtvfreepc-cds.cdn.hinet.net/live/pool/litv-ftv09/4gtv-live-mid/index.m3u8?token=WgPluo7-PHJHsBpcHLKIGQ&expires=1790752344&token1=yeLEdUZCgceHCdApP9zu9Q&expires1=1790752344
-
-#EXTINF:-1 tvg-id="經典電影台[4GTV]" tvg-name="經典電影台" tvg-logo="https://4gtvimg2.4gtv.tv/4gtv-Image/Channel/pc/logo_4gtv_4gtv-live021_pc.png" group-title="Taiwan",Classic Movie
-https://4gtvfree-cds.cdn.hinet.net/live/pool/4gtv-live021/4gtv-live-mid/index.m3u8?token=94YfIcgGa4ZNFBQ_B_Ih6A&expires=1790752388&token1=Zp_XUzvtSrCesyzcQDwW7A&expires1=1790752388
-
-#EXTINF:-1 tvg-id="FastTVVariety" tvg-name="FastTV Variety" tvg-logo="https://4gtvimg2.4gtv.tv/4gtv-Image/Channel/pc/logo_4gtv_4gtv-live741_pc.png" group-title="Taiwan",FastTV Variety
-https://4gtvpcvod-cds.cdn.hinet.net/vod_4gtv/_definst_/smil:4gtv/2023/201601190018_460_A_20230820_0010001/4gtv-hls-high.smil/playlist.m3u8?token=MWaKRTZuXtw0tLbnsP-bLw&expires=1790752556&token1=l8rRE6Rjj_66Zxcrw4ku5Q&expires1=1790752556
-
-#EXTINF:-1 tvg-id="原住民族電視台[4GTV]" tvg-name="原住民族電視台" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/TITV.png" group-title="Taiwan",Indigenous Peoples
-https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv080/4gtv-live-mid/index.m3u8?token=zdsC2OJMyiYVL4knonksig&expires=1790753158&token1=HzVCKjXIbrhEUa7D3N9cGg&expires1=1790753158
-
-#EXTINF:-1 tvg-id="ArirangTV" tvg-name="Arirang News" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/ArirangTV.png" group-title="International",Arirang News
-https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv079/4gtv-live-mid/index.m3u8?token=ixgyYxGx7BmF0lzywzQEZg&expires=1790753253&token1=voQu9HYxNgchJyQzeXG9Kg&expires1=1790753253
-"""
-
-    # Simpan sebagai file taiwan_4gtv.m3u
-    with open("taiwan_4gtv.m3u", "w", encoding="utf-8") as f:
-        f.write(m3u_content.strip())
-    print("File taiwan_4gtv.m3u berhasil diperbarui!")
+            # Simpan hasilnya ke file taiwan_4gtv.m3u
+            with open("taiwan_4gtv.m3u", "w", encoding="utf-8") as f:
+                f.write(final_content.strip())
+                
+            print("Sukses: File taiwan_4gtv.m3u berhasil diperbarui dengan token terbaru!")
+        else:
+            print("Peringatan: Data yang diunduh tidak valid format M3U.")
+            
+    except urllib.error.URLError as e:
+        print(f"Gagal mengambil data dari sumber: {e.reason}")
+    except Exception as e:
+        print(f"Terjadi kesalahan tak terduga: {str(e)}")
 
 if __name__ == "__main__":
-    generate_m3u()
+    fetch_and_update_playlist()
