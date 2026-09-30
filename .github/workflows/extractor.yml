@@ -2,7 +2,7 @@ name: Auto Extract 4GTV Tokens
 
 on:
   schedule:
-    - cron: '0 */2 * * *'  # Berjalan otomatis setiap 2 jam sekali di cloud GitHub
+    - cron: '0 */6 * * *'  # Berjalan otomatis setiap 6 jam sekali di cloud GitHub
   workflow_dispatch:       # Memungkinkan Anda menjalankan secara manual dari tab Actions di GitHub
 
 jobs:
