@@ -23,46 +23,30 @@ jobs:
           pip install playwright
           playwright install chromium
 
-      - name: Run Extraction Script Directly
+      - name: Run Extraction Script with Ad-Handling
         run: |
           python3 - << 'EOF'
           import datetime
-          import subprocess
           import time
           import re
+          import subprocess
           from playwright.sync_api import sync_playwright
 
-          # Pemetaan saluran dengan keyword unik agar tidak saling bertukar token/url
+          # Pemetaan saluran lengkap dengan keyword unik
           CHANNELS_MAP = {
-              "4gtv-4gtv003": {"url": "https://www.4gtv.tv/channel/4gtv-4gtv003?set=1&ch=1", "keyword": "4gtv003"},
-              "4gtv-4gtv001": {"url": "https://www.4gtv.tv/channel/4gtv-4gtv001?set=1&ch=2", "keyword": "4gtv001"},
-              "4gtv-4gtv002": {"url": "https://www.4gtv.tv/channel/4gtv-4gtv002?set=1&ch=3", "keyword": "4gtv002"},
-              "litv-ftv13": {"url": "https://www.4gtv.tv/channel/litv-ftv13?set=1&ch=31", "keyword": "ftv13"},
-              "litv-ftv07": {"url": "https://www.4gtv.tv/channel/litv-ftv07?set=4&ch=61", "keyword": "ftv07"},
-              "4gtv-live021": {"url": "https://www.4gtv.tv/channel/4gtv-live021", "keyword": "live021"},
-              "4gtv-4gtv080": {"url": "https://www.4gtv.tv/channel/4gtv-4gtv080?set=4&ch=124", "keyword": "4gtv080"},
-              "4gtv-4gtv079": {"url": "https://www.4gtv.tv/channel/4gtv-4gtv079?set=4&ch=189", "keyword": "4gtv079"},
-              "mozai_ftv_variety": {"url": "https://www.4gtv.tv/channel/4gtv-4gtv004?set=4&ch=16", "keyword": "4gtv004"},
-              "mozai_chuko": {"url": "https://www.4gtv.tv/channel/4gtv-4gtv006?set=4&ch=113", "keyword": "4gtv006"},
-              "mozai_pts_drama": {"url": "https://www.4gtv.tv/channel/litv-ftv13?set=4&ch=31", "keyword": "ftv13"},
-              "mozai_ftv_drama": {"url": "https://www.4gtv.tv/channel/litv-ftv09?set=4&ch=24", "keyword": "ftv09"},
-              "vod_4gtv": {"url": "https://www.4gtv.tv/channel/fast-live241?set=4&ch=460", "keyword": "fast-live"}
-          }
-
-          CHANNEL_IDENTIFIERS = {
-              "4gtv-4gtv003": "民視第一台",
-              "4gtv-4gtv001": "民視台灣台",
-              "4gtv-4gtv002": "民視",
-              "litv-ftv13": "民視新聞台",
-              "litv-ftv07": "民視旅遊台",
-              "4gtv-live021": "經典電影台",
-              "4gtv-4gtv080": "原住民族電視台",
-              "4gtv-4gtv079": "Arrirang",
-              "mozai_ftv_variety": "民視綜藝台",
-              "mozai_chuko": "豬哥亮歌廳秀",
-              "mozai_pts_drama": "公視戲劇",
-              "mozai_ftv_drama": "民視影劇台",
-              "vod_4gtv": "FastTV Variety"
+              "民視第一台": {"url": "https://www.4gtv.tv/channel/4gtv-4gtv003?set=1&ch=1", "keyword": "4gtv003"},
+              "民視台灣台": {"url": "https://www.4gtv.tv/channel/4gtv-4gtv001?set=1&ch=2", "keyword": "4gtv001"},
+              "民視": {"url": "https://www.4gtv.tv/channel/4gtv-4gtv002?set=1&ch=3", "keyword": "4gtv002"},
+              "民視新聞台": {"url": "https://www.4gtv.tv/channel/litv-ftv13?set=1&ch=31", "keyword": "ftv13"},
+              "民視旅遊台": {"url": "https://www.4gtv.tv/channel/litv-ftv07?set=4&ch=61", "keyword": "ftv07"},
+              "經典電影台": {"url": "https://www.4gtv.tv/channel/4gtv-live021", "keyword": "live021"},
+              "原住民族電視台": {"url": "https://www.4gtv.tv/channel/4gtv-4gtv080?set=4&ch=124", "keyword": "4gtv080"},
+              "Arrirang": {"url": "https://www.4gtv.tv/channel/4gtv-4gtv079?set=4&ch=189", "keyword": "4gtv079"},
+              "民視綜藝台": {"url": "https://www.4gtv.tv/channel/4gtv-4gtv004?set=4&ch=16", "keyword": "4gtv004"},
+              "豬哥亮歌廳秀": {"url": "https://www.4gtv.tv/channel/4gtv-4gtv006?set=4&ch=113", "keyword": "4gtv006"},
+              "公視戲劇": {"url": "https://www.4gtv.tv/channel/litv-ftv13?set=4&ch=31", "keyword": "ftv13"},
+              "民視影劇台": {"url": "https://www.4gtv.tv/channel/litv-ftv09?set=4&ch=24", "keyword": "ftv09"},
+              "FastTV Variety": {"url": "https://www.4gtv.tv/channel/fast-live241?set=4&ch=460", "keyword": "fast-live"}
           }
 
           try:
@@ -78,7 +62,7 @@ jobs:
               context = browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
               page = context.new_page()
 
-              for key, data in CHANNELS_MAP.items():
+              for name, data in CHANNELS_MAP.items():
                   web_url = data["url"]
                   keyword = data["keyword"]
                   current_captured_url = None
@@ -86,29 +70,45 @@ jobs:
                   def handle_req(request):
                       nonlocal current_captured_url
                       req_url = request.url
-                      # Blokir total server bersama static-mozai agar tidak terjadi duplikasi URL
+                      # Abaikan server bersama mozai
                       if "static-mozai" in req_url:
                           return
-                      # Pastikan m3u8, memiliki token, dan wajib mengandung keyword unik channel tersebut
+                      # Tangkap hanya jika m3u8, memiliki token, dan mengandung keyword unik channel
                       if ".m3u8" in req_url and "token=" in req_url and keyword in req_url:
                           current_captured_url = req_url
 
                   page.on("request", handle_req)
                   try:
-                      print(f"Mengakses: {key} (Keyword: {keyword}) -> {web_url}")
+                      print(f"Mengakses {name} -> {web_url}")
                       page.goto(web_url, timeout=40000)
-                      time.sleep(6)
+                      
+                      # Beri jeda awal agar pemutar dan iklan termuat
+                      time.sleep(4)
                       try:
-                          page.click("video, .jw-display-icon-container, .vjs-big-play-button", timeout=3000)
+                          page.click("video, .jw-display-icon-container, .vjs-big-play-button", timeout=2000)
                       except:
                           pass
-                      time.sleep(5)
+
+                      # Looping menunggu hingga iklan selesai dan token asli tertangkap (maksimal 35 detik)
+                      start_wait = time.time()
+                      while time.time() - start_wait < 35:
+                          if current_captured_url:
+                              break
+                          # Coba klik area video atau tombol lewati iklan secara berkala jika macet
+                          try:
+                              page.click(".skip-button, .ad-skip, video", timeout=1000)
+                          except:
+                              pass
+                          time.sleep(2)
+
                       if current_captured_url:
-                          captured_urls[key] = current_captured_url
-                          print(f"Sukses dapat token unik untuk {key}")
+                          captured_urls[name] = current_captured_url
+                          print(f"Berhasil melewati iklan dan mendapatkan token untuk {name}")
+                      else:
+                          print(f"Peringatan: Timeout menunggu token untuk {name}")
                   except Exception as err:
-                      print(f"Gagal memuat {key}: {err}")
-                  
+                      print(f"Error pada {name}: {err}")
+
                   page.remove_listener("request", handle_req)
               browser.close()
 
@@ -120,14 +120,14 @@ jobs:
                   line = lines[i]
                   new_lines.append(line)
                   if line.startswith("#EXTINF"):
-                      matched_key = None
-                      for key, identifier in CHANNEL_IDENTIFIERS.items():
-                          if identifier in line:
-                              matched_key = key
+                      matched_name = None
+                      for ch_name in captured_urls.keys():
+                          if ch_name in line:
+                              matched_name = ch_name
                               break
-                      if matched_key and matched_key in captured_urls:
+                      if matched_name:
                           if i + 1 < len(lines) and not lines[i + 1].startswith("#"):
-                              new_lines.append(captured_urls[matched_key])
+                              new_lines.append(captured_urls[matched_name])
                               i += 2
                               continue
                   i += 1
@@ -144,10 +144,9 @@ jobs:
               subprocess.run(["git", "add", "taiwan_4gtv.m3u"], check=True)
               status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True, check=True)
               if status.stdout.strip():
-                  current_time = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
-                  subprocess.run(["git", "commit", "-m", f"Auto-update unique tokens: {current_time}"], check=True)
+                  subprocess.run(["git", "commit", "-m", f"Auto-update tokens bypassing ads: {timestamp_str}"], check=True)
                   subprocess.run(["git", "push"], check=True)
-                  print("Berhasil memperbarui dan mem-push token unik baru ke GitHub!")
+                  print("Berhasil memperbarui dan mem-push playlist!")
           EOF
 
       - name: Commit and Push Changes (Fallback)
