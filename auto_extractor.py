@@ -51,9 +51,9 @@ def update_git_repo():
             print("[INFO] Tidak ada perubahan token baru pada file m3u.")
             return
 
-        subprocess.run(["git", "commit", "-m", "Auto-update all 13 unique 4GTV tokens via GitHub Actions"], check=True)
+        subprocess.run(["git", "commit", "-m", "Auto-update valid token streams via GitHub Actions"], check=True)
         subprocess.run(["git", "push"], check=True)
-        print("[SUKSES] Semua token ke-13 saluran berhasil diperbarui secara unik dan di-push ke GitHub!")
+        print("[SUKSES] Semua token saluran valid berhasil diperbarui dan di-push ke GitHub!")
     except Exception as e:
         print(f"[GAGAL PUSH] Terjadi kesalahan saat git push: {e}")
 
@@ -75,7 +75,6 @@ def scrape_4gtv_tokens():
         )
         page = context.new_page()
 
-        # Looping mengunjungi ke-13 web saluran satu per satu secara terisolasi
         for key, web_url in CHANNELS_MAP.items():
             print(f"[INFO] Mengakses web untuk {key} -> {web_url}")
             current_captured_url = None
@@ -83,15 +82,17 @@ def scrape_4gtv_tokens():
             def handle_req(request):
                 nonlocal current_captured_url
                 req_url = request.url
-                if ".m3u8" in req_url and ("hinet.net" in req_url or "4gtv.tv" in req_url):
+                # HANYA tangkap jika formatnya .m3u8 DAN mengandung parameter token & expires yang sah
+                if ".m3u8" in req_url and "token=" in req_url and ("hinet.net" in req_url or "4gtv.tv" in req_url):
                     current_captured_url = req_url
 
             page.on("request", handle_req)
 
             try:
                 page.goto(web_url, timeout=40000)
-                time.sleep(5)
+                time.sleep(6)
                 try:
+                    # Simulasi klik untuk memicu pemutar video men-generate token stream aktif
                     page.click("video, .jw-display-icon-container, .vjs-big-play-button", timeout=3000)
                 except:
                     pass
@@ -99,9 +100,9 @@ def scrape_4gtv_tokens():
 
                 if current_captured_url:
                     captured_urls[key] = current_captured_url
-                    print(f"[DAPAT] Token unik untuk {key}")
+                    print(f"[DAPAT] Token valid untuk {key}")
                 else:
-                    print(f"[PERINGATAN] Tidak ada m3u8 tertangkap untuk {key}")
+                    print(f"[PERINGATAN] Tidak ada stream ber-token tertangkap untuk {key}")
             except Exception as e:
                 print(f"[ERROR] Gagal memuat halaman {web_url}: {e}")
 
@@ -110,9 +111,8 @@ def scrape_4gtv_tokens():
         browser.close()
 
     if captured_urls:
-        print(f"[INFO] Berhasil menangkap {len(captured_urls)} token baru.")
+        print(f"[INFO] Berhasil menangkap {len(captured_urls)} token valid.")
         
-        # Proses pembaruan baris per baris berdasarkan identifier saluran masing-masing
         lines = content.splitlines()
         new_lines = []
         i = 0
