@@ -2,9 +2,8 @@ name: Update 4GTV Playlist Every 6 Hours
 
 on:
   schedule:
-    # Menjalankan otomatis setiap 6 jam sekali
     - cron: '0 */6 * * *'
-  workflow_dispatch: # Memungkinkan tombol 'Run workflow' manual di tab Actions
+  workflow_dispatch:
 
 jobs:
   update-m3u:
@@ -33,7 +32,6 @@ jobs:
           import subprocess
           from playwright.sync_api import sync_playwright
 
-          # Pemetaan lengkap ke-13 saluran dengan kata kunci unik masing-masing
           CHANNELS = {
               "FTV Channel 1": {"url": "https://www.4gtv.tv/channel/4gtv-4gtv003?set=1&ch=1", "keyword": "4gtv003"},
               "FTV Taiwan": {"url": "https://www.4gtv.tv/channel/4gtv-4gtv001?set=1&ch=2", "keyword": "4gtv001"},
@@ -66,17 +64,14 @@ jobs:
               for name, data in CHANNELS.items():
                   web_url = data["url"]
                   keyword = data["keyword"]
-                  current_captured_url = None
+                  result = {"url": None}  # Menggunakan dictionary untuk menghindari isu scope/nonlocal
 
                   def handle_req(request):
-                      nonlocal current_captured_url
                       req_url = request.url
-                      # Blokir total server bersama static-mozai agar tidak terjadi duplikasi URL
                       if "static-mozai" in req_url:
                           return
-                      # Pastikan m3u8, memiliki token, dan wajib mengandung keyword unik channel tersebut
                       if ".m3u8" in req_url and "token=" in req_url and keyword in req_url:
-                          current_captured_url = req_url
+                          result["url"] = req_url
 
                   page.on("request", handle_req)
                   try:
@@ -91,7 +86,7 @@ jobs:
                       # Polling loop menunggu iklan selesai (maksimal 35 detik)
                       start_wait = time.time()
                       while time.time() - start_wait < 35:
-                          if current_captured_url:
+                          if result["url"]:
                               break
                           try:
                               page.click(".skip-button, .ad-skip, video", timeout=1000)
@@ -99,8 +94,8 @@ jobs:
                               pass
                           time.sleep(2)
 
-                      if current_captured_url:
-                          captured_urls[name] = current_captured_url
+                      if result["url"]:
+                          captured_urls[name] = result["url"]
                           print(f"Berhasil mendapatkan token untuk {name}")
                       else:
                           print(f"Timeout menunggu token untuk {name}")
