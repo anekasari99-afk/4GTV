@@ -32,7 +32,7 @@ jobs:
           import re
           from playwright.sync_api import sync_playwright
 
-          # Pemetaan lengkap saluran beserta kata kunci unik untuk filternya
+          # Pemetaan saluran dengan keyword unik agar tidak saling bertukar token/url
           CHANNELS_MAP = {
               "4gtv-4gtv003": {"url": "https://www.4gtv.tv/channel/4gtv-4gtv003?set=1&ch=1", "keyword": "4gtv003"},
               "4gtv-4gtv001": {"url": "https://www.4gtv.tv/channel/4gtv-4gtv001?set=1&ch=2", "keyword": "4gtv001"},
@@ -42,11 +42,10 @@ jobs:
               "4gtv-live021": {"url": "https://www.4gtv.tv/channel/4gtv-live021", "keyword": "live021"},
               "4gtv-4gtv080": {"url": "https://www.4gtv.tv/channel/4gtv-4gtv080?set=4&ch=124", "keyword": "4gtv080"},
               "4gtv-4gtv079": {"url": "https://www.4gtv.tv/channel/4gtv-4gtv079?set=4&ch=189", "keyword": "4gtv079"},
-              # Saluran Mozai & VOD (Memiliki pola khusus mozai)
-              "mozai_ftv_variety": {"url": "https://www.4gtv.tv/channel/4gtv-4gtv004?set=4&ch=16", "keyword": "mozai"},
-              "mozai_chuko": {"url": "https://www.4gtv.tv/channel/4gtv-4gtv006?set=4&ch=113", "keyword": "mozai"},
-              "mozai_pts_drama": {"url": "https://www.4gtv.tv/channel/litv-ftv13?set=4&ch=31", "keyword": "mozai"},
-              "mozai_ftv_drama": {"url": "https://www.4gtv.tv/channel/litv-ftv09?set=4&ch=24", "keyword": "mozai"},
+              "mozai_ftv_variety": {"url": "https://www.4gtv.tv/channel/4gtv-4gtv004?set=4&ch=16", "keyword": "4gtv004"},
+              "mozai_chuko": {"url": "https://www.4gtv.tv/channel/4gtv-4gtv006?set=4&ch=113", "keyword": "4gtv006"},
+              "mozai_pts_drama": {"url": "https://www.4gtv.tv/channel/litv-ftv13?set=4&ch=31", "keyword": "ftv13"},
+              "mozai_ftv_drama": {"url": "https://www.4gtv.tv/channel/litv-ftv09?set=4&ch=24", "keyword": "ftv09"},
               "vod_4gtv": {"url": "https://www.4gtv.tv/channel/fast-live241?set=4&ch=460", "keyword": "fast-live"}
           }
 
@@ -87,20 +86,16 @@ jobs:
                   def handle_req(request):
                       nonlocal current_captured_url
                       req_url = request.url
-                      if ".m3u8" in req_url and "token=" in req_url:
-                          # Aturan pencegah silang:
-                          if keyword == "mozai":
-                              # Jika saluran mozai, pastikan mengambil url mozai
-                              if "mozai" in req_url:
-                                  current_captured_url = req_url
-                          else:
-                              # Jika saluran biasa, JANGAN TANGKAP URL mozai yang generik
-                              if "mozai" not in req_url and ("hinet.net" in req_url or "4gtv.tv" in req_url):
-                                  current_captured_url = req_url
+                      # Blokir total server bersama static-mozai agar tidak terjadi duplikasi URL
+                      if "static-mozai" in req_url:
+                          return
+                      # Pastikan m3u8, memiliki token, dan wajib mengandung keyword unik channel tersebut
+                      if ".m3u8" in req_url and "token=" in req_url and keyword in req_url:
+                          current_captured_url = req_url
 
                   page.on("request", handle_req)
                   try:
-                      print(f"Mengakses: {key} -> {web_url}")
+                      print(f"Mengakses: {key} (Keyword: {keyword}) -> {web_url}")
                       page.goto(web_url, timeout=40000)
                       time.sleep(6)
                       try:
@@ -110,9 +105,9 @@ jobs:
                       time.sleep(5)
                       if current_captured_url:
                           captured_urls[key] = current_captured_url
-                          print(f"Berhasil dapat token untuk {key}")
+                          print(f"Sukses dapat token unik untuk {key}")
                   except Exception as err:
-                      print(f"Gagal untuk {key}: {err}")
+                      print(f"Gagal memuat {key}: {err}")
                   
                   page.remove_listener("request", handle_req)
               browser.close()
@@ -152,7 +147,7 @@ jobs:
                   current_time = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
                   subprocess.run(["git", "commit", "-m", f"Auto-update unique tokens: {current_time}"], check=True)
                   subprocess.run(["git", "push"], check=True)
-                  print("Berhasil memperbarui dan mem-push token unik baru!")
+                  print("Berhasil memperbarui dan mem-push token unik baru ke GitHub!")
           EOF
 
       - name: Commit and Push Changes (Fallback)
