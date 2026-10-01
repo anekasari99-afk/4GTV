@@ -23,12 +23,13 @@ jobs:
           pip install playwright
           playwright install chromium
 
-      - name: Create Clean Python Script On-the-Fly
+      - name: Run Extraction Script Directly
         run: |
-          cat << 'EOF' > update_4gtv.py
+          python3 - << 'EOF'
           import datetime
           import subprocess
           import time
+          import re
           from playwright.sync_api import sync_playwright
 
           CHANNELS_MAP = {
@@ -63,92 +64,81 @@ jobs:
               "vod_4gtv": "FastTV Variety"
           }
 
-          def update_git_repo():
-              try:
-                  subprocess.run(["git", "config", "--global", "user.name", "GitHub Actions Bot"], check=True)
-                  subprocess.run(["git", "config", "--global", "user.email", "actions@github.com"], check=True)
-                  subprocess.run(["git", "add", "taiwan_4gtv.m3u"], check=True)
-                  status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True, check=True)
-                  if not status.stdout.strip():
-                      return
+          try:
+              with open("taiwan_4gtv.m3u", "r", encoding="utf-8") as f:
+                  content = f.read()
+          except Exception as e:
+              print(f"Error reading m3u: {e}")
+              content = ""
+
+          captured_urls = {}
+          with sync_playwright() as p:
+              browser = p.chromium.launch(headless=True, args=["--disable-blink-features=AutomationControlled"])
+              context = browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
+              page = context.new_page()
+
+              for key, web_url in CHANNELS_MAP.items():
+                  current_captured_url = None
+                  def handle_req(request):
+                      nonlocal current_captured_url
+                      if ".m3u8" in request.url and "token=" in request.url and ("hinet.net" in request.url or "4gtv.tv" in request.url):
+                          current_captured_url = request.url
+
+                  page.on("request", handle_req)
+                  try:
+                      page.goto(web_url, timeout=40000)
+                      time.sleep(6)
+                      try:
+                          page.click("video, .jw-display-icon-container, .vjs-big-play-button", timeout=3000)
+                      except:
+                      pass
+                      time.sleep(5)
+                      if current_captured_url:
+                          captured_urls[key] = current_captured_url
+                  except:
+                      pass
+                  page.remove_listener("request", handle_req)
+              browser.close()
+
+          if captured_urls and content:
+              lines = content.splitlines()
+              new_lines = []
+              i = 0
+              while i < len(lines):
+                  line = lines[i]
+                  new_lines.append(line)
+                  if line.startswith("#EXTINF"):
+                      matched_key = None
+                      for key, identifier in CHANNEL_IDENTIFIERS.items():
+                          if identifier in line:
+                              matched_key = key
+                              break
+                      if matched_key and matched_key in captured_urls:
+                          if i + 1 < len(lines) and not lines[i + 1].startswith("#"):
+                              new_lines.append(captured_urls[matched_key])
+                              i += 2
+                              continue
+                  i += 1
+
+              content = "\n".join(new_lines)
+              timestamp_str = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+              content = re.sub(r'# Last Auto-Update:.*', f'# Last Auto-Update: {timestamp_str}', content)
+
+              with open("taiwan_4gtv.m3u", "w", encoding="utf-8") as f:
+                  f.write(content)
+
+              subprocess.run(["git", "config", "--global", "user.name", "GitHub Actions Bot"], check=True)
+              subprocess.run(["git", "config", "--global", "user.email", "actions@github.com"], check=True)
+              subprocess.run(["git", "add", "taiwan_4gtv.m3u"], check=True)
+              status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True, check=True)
+              if status.stdout.strip():
                   current_time = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
                   subprocess.run(["git", "commit", "-m", f"Auto-update tokens: {current_time}"], check=True)
                   subprocess.run(["git", "push"], check=True)
-              except Exception as e:
-                  print(f"Git error: {e}")
-
-          def scrape_4gtv_tokens():
-              try:
-                  with open("taiwan_4gtv.m3u", "r", encoding="utf-8") as f:
-                      content = f.read()
-              except Exception as e:
-                  return
-
-              captured_urls = {}
-              with sync_playwright() as p:
-                  browser = p.chromium.launch(headless=True, args=["--disable-blink-features=AutomationControlled"])
-                  context = browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
-                  page = context.new_page()
-
-                  for key, web_url in CHANNELS_MAP.items():
-                      current_captured_url = None
-                      def handle_req(request):
-                          nonlocal current_captured_url
-                          if ".m3u8" in request.url and "token=" in request.url and ("hinet.net" in request.url or "4gtv.tv" in request.url):
-                              current_captured_url = request.url
-
-                      page.on("request", handle_req)
-                      try:
-                          page.goto(web_url, timeout=40000)
-                          time.sleep(6)
-                          try:
-                              page.click("video, .jw-display-icon-container, .vjs-big-play-button", timeout=3000)
-                          except:
-                              pass
-                          time.sleep(5)
-                          if current_captured_url:
-                              captured_urls[key] = current_captured_url
-                      except:
-                          pass
-                      page.remove_listener("request", handle_req)
-                  browser.close()
-
-              if captured_urls:
-                  lines = content.splitlines()
-                  new_lines = []
-                  i = 0
-                  while i < len(lines):
-                      line = lines[i]
-                      new_lines.append(line)
-                      if line.startswith("#EXTINF"):
-                          matched_key = None
-                          for key, identifier in CHANNEL_IDENTIFIERS.items():
-                              if identifier in line:
-                                  matched_key = key
-                                  break
-                          if matched_key and matched_key in captured_urls:
-                              if i + 1 < len(lines) and not lines[i + 1].startswith("#"):
-                                  new_lines.append(captured_urls[matched_key])
-                                  i += 2
-                                  continue
-                      i += 1
-
-                  content = "\n".join(new_lines)
-                  timestamp_str = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
-                  content = re.sub(r'# Last Auto-Update:.*', f'# Last Auto-Update: {timestamp_str}', content)
-
-                  with open("taiwan_4gtv.m3u", "w", encoding="utf-8") as f:
-                      f.write(content)
-                  update_git_repo()
-
-          if __name__ == "__main__":
-              scrape_4gtv_tokens()
+                  print("Berhasil memperbarui dan mem-push token baru!")
           EOF
 
-      - name: Run Script
-        run: python update_4gtv.py
-
-      - name: Commit and Push Changes
+      - name: Commit and Push Changes (Fallback)
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Auto-update 4GTV playlist [skip ci]"
