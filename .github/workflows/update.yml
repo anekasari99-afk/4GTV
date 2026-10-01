@@ -2,9 +2,8 @@ name: Update 4GTV Playlist
 
 on:
   schedule:
-    # Menjalankan script otomatis setiap 3 jam sekali
     - cron: '0 */3 * * *'
-  workflow_dispatch: # Memungkinkan tombol 'Run workflow' manual di GitHub
+  workflow_dispatch:
 
 jobs:
   update-m3u:
@@ -23,6 +22,128 @@ jobs:
           python -m pip install --upgrade pip
           pip install playwright
           playwright install chromium
+
+      - name: Create Clean Python Script On-the-Fly
+        run: |
+          cat << 'EOF' > update_4gtv.py
+          import datetime
+          import subprocess
+          import time
+          from playwright.sync_api import sync_playwright
+
+          CHANNELS_MAP = {
+              "4gtv-4gtv003": "https://www.4gtv.tv/channel/4gtv-4gtv003?set=1&ch=1",
+              "4gtv-4gtv001": "https://www.4gtv.tv/channel/4gtv-4gtv001?set=1&ch=2",
+              "4gtv-4gtv002": "https://www.4gtv.tv/channel/4gtv-4gtv002?set=1&ch=3",
+              "litv-ftv13": "https://www.4gtv.tv/channel/litv-ftv13?set=1&ch=31",
+              "litv-ftv07": "https://www.4gtv.tv/channel/litv-ftv07?set=4&ch=61",
+              "4gtv-live021": "https://www.4gtv.tv/channel/4gtv-live021",
+              "4gtv-4gtv080": "https://www.4gtv.tv/channel/4gtv-4gtv080?set=4&ch=124",
+              "4gtv-4gtv079": "https://www.4gtv.tv/channel/4gtv-4gtv079?set=4&ch=189",
+              "mozai_ftv_variety": "https://www.4gtv.tv/channel/4gtv-4gtv004?set=4&ch=16",
+              "mozai_chuko": "https://www.4gtv.tv/channel/4gtv-4gtv006?set=4&ch=113",
+              "mozai_pts_drama": "https://www.4gtv.tv/channel/litv-ftv13?set=4&ch=31",
+              "mozai_ftv_drama": "https://www.4gtv.tv/channel/litv-ftv09?set=4&ch=24",
+              "vod_4gtv": "https://www.4gtv.tv/channel/fast-live241?set=4&ch=460"
+          }
+
+          CHANNEL_IDENTIFIERS = {
+              "4gtv-4gtv003": "民視第一台",
+              "4gtv-4gtv001": "民視台灣台",
+              "4gtv-4gtv002": "民視",
+              "litv-ftv13": "民視新聞台",
+              "litv-ftv07": "民視旅遊台",
+              "4gtv-live021": "經典電影台",
+              "4gtv-4gtv080": "原住民族電視台",
+              "4gtv-4gtv079": "Arrirang",
+              "mozai_ftv_variety": "民視綜藝台",
+              "mozai_chuko": "豬哥亮歌廳秀",
+              "mozai_pts_drama": "公視戲劇",
+              "mozai_ftv_drama": "民視影劇台",
+              "vod_4gtv": "FastTV Variety"
+          }
+
+          def update_git_repo():
+              try:
+                  subprocess.run(["git", "config", "--global", "user.name", "GitHub Actions Bot"], check=True)
+                  subprocess.run(["git", "config", "--global", "user.email", "actions@github.com"], check=True)
+                  subprocess.run(["git", "add", "taiwan_4gtv.m3u"], check=True)
+                  status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True, check=True)
+                  if not status.stdout.strip():
+                      return
+                  current_time = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+                  subprocess.run(["git", "commit", "-m", f"Auto-update tokens: {current_time}"], check=True)
+                  subprocess.run(["git", "push"], check=True)
+              except Exception as e:
+                  print(f"Git error: {e}")
+
+          def scrape_4gtv_tokens():
+              try:
+                  with open("taiwan_4gtv.m3u", "r", encoding="utf-8") as f:
+                      content = f.read()
+              except Exception as e:
+                  return
+
+              captured_urls = {}
+              with sync_playwright() as p:
+                  browser = p.chromium.launch(headless=True, args=["--disable-blink-features=AutomationControlled"])
+                  context = browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
+                  page = context.new_page()
+
+                  for key, web_url in CHANNELS_MAP.items():
+                      current_captured_url = None
+                      def handle_req(request):
+                          nonlocal current_captured_url
+                          if ".m3u8" in request.url and "token=" in request.url and ("hinet.net" in request.url or "4gtv.tv" in request.url):
+                              current_captured_url = request.url
+
+                      page.on("request", handle_req)
+                      try:
+                          page.goto(web_url, timeout=40000)
+                          time.sleep(6)
+                          try:
+                              page.click("video, .jw-display-icon-container, .vjs-big-play-button", timeout=3000)
+                          except:
+                              pass
+                          time.sleep(5)
+                          if current_captured_url:
+                              captured_urls[key] = current_captured_url
+                      except:
+                          pass
+                      page.remove_listener("request", handle_req)
+                  browser.close()
+
+              if captured_urls:
+                  lines = content.splitlines()
+                  new_lines = []
+                  i = 0
+                  while i < len(lines):
+                      line = lines[i]
+                      new_lines.append(line)
+                      if line.startswith("#EXTINF"):
+                          matched_key = None
+                          for key, identifier in CHANNEL_IDENTIFIERS.items():
+                              if identifier in line:
+                                  matched_key = key
+                                  break
+                          if matched_key and matched_key in captured_urls:
+                              if i + 1 < len(lines) and not lines[i + 1].startswith("#"):
+                                  new_lines.append(captured_urls[matched_key])
+                                  i += 2
+                                  continue
+                      i += 1
+
+                  content = "\n".join(new_lines)
+                  timestamp_str = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+                  content = re.sub(r'# Last Auto-Update:.*', f'# Last Auto-Update: {timestamp_str}', content)
+
+                  with open("taiwan_4gtv.m3u", "w", encoding="utf-8") as f:
+                      f.write(content)
+                  update_git_repo()
+
+          if __name__ == "__main__":
+              scrape_4gtv_tokens()
+          EOF
 
       - name: Run Script
         run: python update_4gtv.py
