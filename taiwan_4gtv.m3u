@@ -1,55 +1,55 @@
 #EXTM3U x-tvg-url="https://epg.pw/xmltv/epg_TW.xml.gz"
-# Last Auto-Update: 2026-11-16 03:30:19 UTC
+# Last Auto-Update: 2026-11-16 09:29:47 UTC
 
 #EXTINF:-1 tvg-id="民視第一台[4GTV]" tvg-name="民視第一台" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/FTV2.png" group-title="Taiwan",FTV Channel 1
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.4gtv.tv/
-https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv003/4gtv-live-mid/4gtv-4gtv003-avc1_800000=10002-mp4a_131000_zho=20000.m3u8?token=c-9DOtTkWP9rXNrXmGOyFg&expires=1794817644&token1=rTh8-P0IXkR7_3q_hrTwEQ&expires1=1794817644
+https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv003/4gtv-live-mid/4gtv-4gtv003-avc1_800000=10002-mp4a_131000_zho=20000.m3u8?token=OlZnUYyez5yx5ZgXUEpTPw&expires=1794839237&token1=K78ZDPfaQCWUrJtOf0a85g&expires1=1794839237
 
 #EXTINF:-1 tvg-id="民視台灣台[4GTV]" tvg-name="民視台灣台" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/FTV3.png" group-title="Taiwan",FTV Taiwan
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.4gtv.tv/
-https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv001/4gtv-live-mid/4gtv-4gtv001-avc1_800000=10002-mp4a_141000_zho=20000.m3u8?token=DMnKuaKVvEs4v2UPGCTTmw&expires=1794817660&token1=pBO5CAPLZWUqx9kSmsyUcA&expires1=1794817660
+https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv001/4gtv-live-mid/4gtv-4gtv001-avc1_800000=10002-mp4a_141000_zho=20000.m3u8?token=SgukdlL0S3bAP1MCx1lupQ&expires=1794839252&token1=Df7ZACN1pgPoKdroCp0mIQ&expires1=1794839252
 
 #EXTINF:-1 tvg-id="民視[4GTV]" tvg-name="民視" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/FTV.png" group-title="Taiwan",FTV TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.4gtv.tv/
-https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv002/4gtv-live-mid/4gtv-4gtv002-avc1_800000=10002-mp4a_121000_zho=20000.m3u8?token=obg-6kPSQaaHeZ0PA7OCKQ&expires=1794817670&token1=nOyaM3KaLGKQOZRIT0kS_g&expires1=1794817670
+https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv002/4gtv-live-mid/4gtv-4gtv002-avc1_800000=10002-mp4a_121000_zho=20000.m3u8?token=ZM53BTolna5lBQwtxz86CQ&expires=1794839260&token1=VlKJKfHJDAvHzb5pJTEv_g&expires1=1794839260
 
 #EXTINF:-1 tvg-id="民視新聞台[4GTV]" tvg-name="民視新聞台" tvg-logo="https://raw.githubusercontent.com/wanglindl/TVlogo/main/img/FTV1.png" group-title="Taiwan",FTV News
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.4gtv.tv/
-https://4gtvfreepc-cds.cdn.hinet.net/live/pool/litv-ftv13/4gtv-live-mid/litv-ftv13-avc1_800000=4-mp4a_130000_zho=2.m3u8?token=3AFU9LvvFWDkYjkCgiMWzw&expires=1794817685&token1=N8PbC8Z1-LUNO_CbZ1PMHQ&expires1=1794817685
+https://4gtvfreepc-cds.cdn.hinet.net/live/pool/litv-ftv13/4gtv-live-mid/litv-ftv13-avc1_800000=4-mp4a_130000_zho=2.m3u8?token=bTjqF_Rj_Gc4b3hXG4Rd9A&expires=1794839268&token1=bRvU1WxslglpSihT7iUSKQ&expires1=1794839268
 
 #EXTINF:-1 tvg-id="民視綜藝台[4GTV]" tvg-name="民視綜藝台" tvg-logo="https://raw.githubusercontent.com/wanglindl/TVlogo/main/img/FTV6.png" group-title="Taiwan",FTV Variety
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.4gtv.tv/
-https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv004/4gtv-live-mid/4gtv-4gtv004-avc1_800000=10002-mp4a_135000_zho=20001.m3u8?token=Buk7RuYUTKqMo_wwNMRVYw&expires=1794817694&token1=x0vbq_qw55nhkqHGx6P4HA&expires1=1794817694
+https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv004/4gtv-live-mid/4gtv-4gtv004-avc1_800000=10002-mp4a_135000_zho=20001.m3u8?token=NOkEPPrPJrGW87PTzoMzxQ&expires=1794839278&token1=Az3X6O51KkytTAZsvO49DA&expires1=1794839278
 
 #EXTINF:-1 tvg-id="豬哥亮歌廳秀[4GTV]" tvg-name="豬哥亮歌廳秀" tvg-logo="https://raw.githubusercontent.com/wanglindl/TVlogo/main/img/FTV7.png" group-title="Taiwan",Chu Ko Liang
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.4gtv.tv/
-https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv006/4gtv-live-mid/4gtv-4gtv006-avc1_800000=10002-mp4a_135000_zho=20001.m3u8?token=3EWwdvnnrBO5vgB1ChpwJw&expires=1794817703&token1=gSVnXoUVxXCRrf_ZP76ZnA&expires1=1794817703
+https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv006/4gtv-live-mid/4gtv-4gtv006-avc1_800000=10002-mp4a_135000_zho=20001.m3u8?token=yoGiPNbe0kZG1wDzsI6VTg&expires=1794839286&token1=r7PTeKbgHGFG-NVij1d0tw&expires1=1794839286
 
 #EXTINF:-1 tvg-id="民視旅遊台[4GTV]" tvg-name="民視旅遊台" tvg-logo="https://raw.githubusercontent.com/wanglindl/TVlogo/main/img/FTV5.png" group-title="Taiwan",FTV Travel
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.4gtv.tv/
-https://4gtvfreepc-cds.cdn.hinet.net/live/pool/litv-ftv07/4gtv-live-mid/litv-ftv07-avc1_800000=4-mp4a_135000_zho=6.m3u8?token=PUSFAFsl7c2hcuHTJutszw&expires=1794817712&token1=bjPAEyZKR1rCILgYHN1yfw&expires1=1794817712
+https://4gtvfreepc-cds.cdn.hinet.net/live/pool/litv-ftv07/4gtv-live-mid/litv-ftv07-avc1_800000=4-mp4a_135000_zho=6.m3u8?token=h64xV6eY2cBCNJcAwgEFhw&expires=1794839294&token1=6KccqZt_Mtwe7_DF0RK5-A&expires1=1794839294
 
 #EXTINF:-1 tvg-id="公視戲劇[4GTV]" tvg-name="公視戲劇" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/PTS3.png" group-title="Taiwan",PTS Drama
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.4gtv.tv/
-https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv042/4gtv-live-mid/4gtv-4gtv042-avc1_800000=10002-mp4a_122000_zho=20000.m3u8?token=NkKCBGUQ-IYGdF_4VhWUmA&expires=1794817723&token1=vPcHM77BfEAf5hb5JXbONw&expires1=1794817723
+https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv042/4gtv-live-mid/4gtv-4gtv042-avc1_800000=10002-mp4a_122000_zho=20000.m3u8?token=H16ROo3kOaNGl3DPmiA_sA&expires=1794839302&token1=JzkFDDkqbpi4YksQAJlmLA&expires1=1794839302
 
 #EXTINF:-1 tvg-id="民視影劇台[4GTV]" tvg-name="民視影劇台" tvg-logo="https://raw.githubusercontent.com/wanglindl/TVlogo/main/img/FTV4.png" group-title="Taiwan",FTV Drama
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.4gtv.tv/
-https://4gtvfreepc-cds.cdn.hinet.net/live/pool/litv-ftv09/4gtv-live-mid/litv-ftv09-avc1_800000=4-mp4a_128000=8.m3u8?token=IqPq4AwaoJcMduxtD6KfJA&expires=1794817735&token1=gXMA-FJXbF6o8LRXA8SW9g&expires1=1794817735
+https://4gtvfreepc-cds.cdn.hinet.net/live/pool/litv-ftv09/4gtv-live-mid/litv-ftv09-avc1_800000=4-mp4a_128000=8.m3u8?token=rHc3n4z-l2qte1iTtd4Z0g&expires=1794839310&token1=k0Nc5dXzDtdcqRdNUUkxSQ&expires1=1794839310
 
 #EXTINF:-1 tvg-id="經典電影台[4GTV]" tvg-name="經典電影台" tvg-logo="https://4gtvfree-cds.cdn.hinet.net/live/pool/4gtv-live021/4gtv-live-mid/480.m3u8?token=9laqxEeNWQ6pw_c9PrNwrw&expires=1790857557&token1=I-NxpGyL9nozuHHoNHcoKQ&expires1=1790857557 group-title="Taiwan",Classic Movie
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.4gtv.tv/
-https://4gtvfree-cds.cdn.hinet.net/live/pool/4gtv-live021/4gtv-live-mid/480.m3u8?token=ZlnWERDSq6ssumFwfLMyxw&expires=1794817746&token1=ePMVn7vfAsvhgczN9CoIeg&expires1=1794817746
+https://4gtvfree-cds.cdn.hinet.net/live/pool/4gtv-live021/4gtv-live-mid/480.m3u8?token=_D45Sa84BQRlQk77NODm1w&expires=1794839318&token1=9dqXgjf7il3BPBlPqiT_YA&expires1=1794839318
 
 #EXTINF:-1 tvg-id="FastTV Variety[4GTV]" tvg-name="FastTV Variety" group-title="Taiwan",FastTV Variety
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36
@@ -59,9 +59,9 @@ https://4gtvpcvod-cds.cdn.hinet.net/vod_4gtv/_definst_/smil:4gtv/2025/2025051600
 #EXTINF:-1 tvg-id="原住民族電視台[4GTV]" tvg-name="原住民族電視台" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/TITV.png" group-title="Taiwan",Indigenous Peoples
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.4gtv.tv/
-https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv080/4gtv-live-mid/4gtv-4gtv080-avc1_800000=4-mp4a_135000_zho=6.m3u8?token=JFmr3HSElaH3EoUdjd0vxQ&expires=1794817800&token1=49F2DdMYBRdc2cn8TRYyEg&expires1=1794817800
+https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv080/4gtv-live-mid/4gtv-4gtv080-avc1_800000=4-mp4a_135000_zho=6.m3u8?token=w2LRZC8z863PvkaM_nRRyQ&expires=1794839371&token1=NAbuiUp2bmA9dt9Db-cv8Q&expires1=1794839371
 
 #EXTINF:-1 tvg-id="Arrirang[4GTV]" tvg-name="Arrirang" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/ArirangTV.png" group-title="Taiwan",Arirang News
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.4gtv.tv/
-https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv079/4gtv-live-mid/4gtv-4gtv079-avc1_800000=4-mp4a_130000_zho=6.m3u8?token=4VAdOf8ITy37dS9ZKTycKQ&expires=1794817810&token1=z0eLhMzYMNd-u5SlMHVLbQ&expires1=1794817810
+https://4gtvfreepc-cds.cdn.hinet.net/live/pool/4gtv-4gtv079/4gtv-live-mid/4gtv-4gtv079-avc1_800000=4-mp4a_130000_zho=6.m3u8?token=zayxl5TUWP9H9BrcTj7p_Q&expires=1794839379&token1=BRnifstxOv82Y7BOR20J1A&expires1=1794839379
